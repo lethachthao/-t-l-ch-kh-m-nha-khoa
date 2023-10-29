@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "checkJs": false,
+        "resolveJsonModule": true,
+        "moduleResolution": "node",
+        "target": "ES2020",
+        "module": "ES6"
+    },
+    "exclude": ["node_modules"]
+}

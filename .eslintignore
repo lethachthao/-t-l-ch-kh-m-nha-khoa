@@ -1,0 +1,3 @@
+# eslint sẽ bỏ qua những folder sau đây, chúng ta chỉ cần nó quét qua code của chúng ta, chứ khong cần phải quét các thư viện trong node_modules
+
+node_modules
