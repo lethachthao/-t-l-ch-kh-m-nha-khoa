@@ -28,6 +28,7 @@ import {
     errorConverterMiddleware,
     errorHandlerMiddleware,
 } from './src/middlewares/error.middleware';
+import { routes } from './src/routes';
 
 const app = express();
 
@@ -58,12 +59,8 @@ app.use(xss());
 // em hiểu chưa ạ? vâng ạ
 app.use(hpp());
 
-// method get, method này có thể truy cập thẳng bằng cách nhập url vào trình duyệt
-app.get('/', (req, res) => {
-    // res.status(200).send('Hello Express!');
-    // mình sẽ thử throw lỗi ở đây xem chuyện gì xảy ra
-    throw new Error('homnaytoibuon');
-});
+// apply tất cả các routes đã khai báo
+app.use('/api', routes);
 
 app.use((req, res, next) => {
     const err = new Error('Page not found');
@@ -85,17 +82,35 @@ app.use(errorConverterMiddleware);
 // ông này sẽ xử lí và trả về user, mỗi ông 1 nhiệm vụ
 app.use(errorHandlerMiddleware);
 
-db()
-    .then(() => {
-        console.log('Connected to MongoDB!');
+let server;
 
-        app.listen(3001, () => {
-            console.log('Server listening on port 3001');
-        });
-    })
-    .catch((err) => {
-        console.log('Cannot connect to database!', err);
+db().then(() => {
+    console.log('Connected to MongoDB!');
+
+    server = app.listen(3001, () => {
+        console.log('Server listening on port 3001');
     });
+});
+
+// khi nodejs app chúng ta xảy ra lỗi, nó sẽ hủy tất cả các tác vụ đang thực thi trong process
+const killProcessAndServer = (error) => {
+    // log ra thông tin lỗi
+    console.error(error);
+
+    // nếu server đang starrt thì close server
+    if (server) {
+        server.close(() => {
+            console.log('Server closed!');
+        });
+    }
+
+    // force the process to exit as quickly as possible even if there are still asynchronous operations pending that have not yet completed fully
+    // cái này lên nâng cao anh sẽ nói thêm về này nha, tại đây là kiến thức sâu hơn nữa. dạ vâng
+    process.exit(1);
+};
+
+process.on('uncaughtException', killProcessAndServer);
+process.on('unhandledRejection', killProcessAndServer);
 
 // rồi mai học tiếp em ha dạ vâng ạ.
 // qua zalo nhắn xíu em
