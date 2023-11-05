@@ -10,13 +10,18 @@ export const getMedicalSpecialty = async (req, res, next) => {
 export const createMedicalSpecialty = async (req, res, next) => {
     // lấy ra các fields từ frontend admin tạo và gửi qua đây
     const { name, description } = req.body;
+    const { filename, path } = req.file;
 
     const result = await medicalSpecialtyModel.create({
         name,
         description,
+        avatar: {
+            filename,
+            path,
+        },
     });
 
-    res.json(200).json({
+    res.status(200).json({
         message: 'Tạo chuyên khoa thành công!',
         data: result,
     });
@@ -24,18 +29,38 @@ export const createMedicalSpecialty = async (req, res, next) => {
 
 export const updateMedicalSpecialty = async (req, res, next) => {
     const { id } = req.params;
-    const { name, description, members } = req.body;
+    const { name, description } = req.body;
+    const { filename, path } = req.file || {};
 
-    const result = await medicalSpecialtyModel.findOneAndUpdate(
+    const isIncludeFile = Boolean(req.file);
+
+    const result = await medicalSpecialtyModel.findByIdAndUpdate(
+        id,
         {
-            _id: new ObjectId(id),
+            name,
+            description,
+            ...(isIncludeFile
+                ? {
+                      avatar: {
+                          filename,
+                          path,
+                      },
+                  }
+                : {}),
         },
-        { name, description, members },
         { new: true },
     );
 
-    res.json(200).json({
+    res.status(200).json({
         message: 'Cập nhật chuyên khoa thành công!',
         data: result,
     });
+};
+
+export const deleteMedicalSpecialty = async (req, res, next) => {
+    const { id } = req.params;
+
+    await medicalSpecialtyModel.findByIdAndDelete(id);
+
+    res.status(200).json({ message: 'Xóa chuyên khoa thành công!' });
 };

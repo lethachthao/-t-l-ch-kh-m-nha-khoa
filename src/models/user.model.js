@@ -52,6 +52,7 @@ const userSchema = new Schema(
             trim: true,
             lowercase: true, // chuyển hết sang chữ thường
             index: true, // đánh index để query nhanh hơn
+            unique: true, // email phải là duy nhất không được trùng nhau
             validate: {
                 // validate email, nếu ko phải email hợp lệ thì trả về lỗi với message "Invalid Email"
                 validator: function (value) {
@@ -70,6 +71,11 @@ const userSchema = new Schema(
             type: String,
             required: false,
             trim: true,
+        },
+
+        accountType: {
+            type: String,
+            required: true,
         },
 
         role: {

@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { medicalSpecialtyRoute } from '../modules/medical-specialty/medical-specialty.route';
 import { userRoute } from '../modules/user/user.route';
 import { authRoute } from '../modules/auth/auth.route';
+import { scheduleRoute } from '../modules/schedule/schedule.route';
 
 const routes = Router();
 
@@ -15,13 +16,13 @@ const apiRoutes = [
         route: userRoute,
     },
 
-    // {
-    //     path: '/appointment',
-    //     route: appointmentRoute,
-    // },
     {
         path: '/medical-specialty',
         route: medicalSpecialtyRoute,
+    },
+    {
+        path: '/schedule',
+        route: scheduleRoute,
     },
 ];
 

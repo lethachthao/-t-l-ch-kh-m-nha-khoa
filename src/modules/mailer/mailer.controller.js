@@ -19,6 +19,9 @@ export const sendMail = async (data, callback) => {
             accessToken: process.env.GOOGLE_ACCESS_TOKEN,
             refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
         },
+        tls: {
+            rejectUnauthorized: false,
+        },
     });
 
     // Message object

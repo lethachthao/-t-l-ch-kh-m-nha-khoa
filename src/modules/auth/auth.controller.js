@@ -72,6 +72,7 @@ export const signupController = async (req, res, next) => {
         password: passwordHashed,
     });
 
+    //gửi mail
     const configMail = {
         title: 'Đăng kí thành công!',
         content:

@@ -1,5 +1,7 @@
-import path from 'path';
-import dotenv from 'dotenv';
+import './src/env/load-env';
+
+// import path from 'path';
+// import dotenv from 'dotenv';
 
 // load file env theo môi trường process.env.NODE_ENV, ví dụ .env.development hoặc .env.production
 // process.env.NODE_ENV sẽ phụ thuộc vào config bên trong script package.json
@@ -11,9 +13,9 @@ import dotenv from 'dotenv';
  * nên nó sẽ load file .env.development để lấy các biến môi trường trong đó sử dụng cho project ở local dev
  *  em hiểu chưa? à em hiểu rồi ạ hehe note lại
  */
-dotenv.config({
-    path: path.resolve(process.cwd(), `.env.${process.env.NODE_ENV}`),
-});
+// dotenv.config({
+//     path: path.resolve(process.cwd(), `.env.${process.env.NODE_ENV}`),
+// });
 
 import express from 'express';
 import cors from 'cors';
@@ -36,10 +38,16 @@ const app = express();
 app.use(helmet());
 
 // parse body gửi từ client về thành object để mình có thể sử dụng và truy cập được vào body, giới hạn tối đa của body là 30kb, neu1 vượt quá sẽ báo lỗi về người dùng biết
-app.use(bodyParser.json({ limit: '30kb' }));
+app.use(bodyParser.json({ limit: '50mb' }));
 
 // parse urlencoded gửi về từ body, cho phép giới hạn tối đa là 100 params, extends: true có nghĩa là mình sẽ sử dụng parser của qs thay vì querystring mặc định của bodyparser
-app.use(bodyParser.urlencoded({ parameterLimit: 100, extended: true }));
+app.use(
+    bodyParser.urlencoded({
+        parameterLimit: 100,
+        extended: true,
+        limit: '30mb',
+    }),
+);
 
 app.use(cors());
 // apply cors cho tất cả các request có method là OPTIONS
@@ -112,5 +120,10 @@ const killProcessAndServer = (error) => {
 process.on('uncaughtException', killProcessAndServer);
 process.on('unhandledRejection', killProcessAndServer);
 
+process.on('SIGTERM', () => {
+    if (server) {
+        server.close();
+    }
+});
 // rồi mai học tiếp em ha dạ vâng ạ.
 // qua zalo nhắn xíu em

@@ -20,6 +20,13 @@ const medicalSpecialtySchema = new Schema(
             maxlength: 1000,
         },
 
+        avatar: {
+            type: new Schema({
+                filename: { type: String, required: true },
+                path: { type: String, required: true },
+            }),
+            required: true,
+        },
         // bác sĩ trong chuyên khoa
         members: [
             {
