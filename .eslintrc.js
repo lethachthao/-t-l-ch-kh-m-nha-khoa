@@ -1,7 +1,7 @@
 // ngay lúc này ESlint nó sẽ sinh ra cho chúng ta 1 file cấu hình ESlint, chúng ta có thể thêm sửa tùy biến 1 xíu trong này
 // project của chúng ta sẽ áp dụng những cấu hình ESLint như thế này trong suốt quá trình làm để đảm bảo code đúng và chuẩn nhất có thể em nhé
 
-module.exports = {
+export default {
     env: {
         browser: true,
         commonjs: true,

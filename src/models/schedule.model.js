@@ -20,10 +20,18 @@ const scheduleSchema = new Schema(
         },
 
         // giờ hẹn được admin chỉ định
-        time: {
-            type: Array,
-            required: true,
-        },
+        time: [
+            {
+                start: {
+                    type: String,
+                    required: false,
+                },
+                end: {
+                    type: String,
+                    required: false,
+                },
+            },
+        ],
     },
     {
         timestamps: true,
