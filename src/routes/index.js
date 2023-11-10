@@ -3,6 +3,7 @@ import { medicalSpecialtyRoute } from '../modules/medical-specialty/medical-spec
 import { userRoute } from '../modules/user/user.route';
 import { authRoute } from '../modules/auth/auth.route';
 import { scheduleRoute } from '../modules/schedule/schedule.route';
+import { bookingRoute } from '../modules/booking/booking.route';
 
 const routes = Router();
 
@@ -23,6 +24,10 @@ const apiRoutes = [
     {
         path: '/schedule',
         route: scheduleRoute,
+    },
+    {
+        path: '/booking',
+        route: bookingRoute,
     },
 ];
 

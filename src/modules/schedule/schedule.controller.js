@@ -1,4 +1,7 @@
+import mongoose from 'mongoose';
+import moment from 'moment';
 import { scheduleModel } from '../../models/schedule.model';
+const { ObjectId } = mongoose.Types;
 
 export const addSchedule = async (req, res, next) => {
     const { doctor: doctorId, date, time } = req.body;
@@ -53,4 +56,20 @@ export const updateSchedule = async (req, res, next) => {
         message: 'Cập nhật lịch trình thành công',
         data: result,
     });
+};
+
+export const getSchedule = async (req, res, next) => {
+    const { id } = req.params;
+    const { date } = req.query;
+
+    const result = await scheduleModel.findOne({
+        doctorId: new ObjectId(id),
+
+        date: {
+            $gte: moment(date).format(),
+            $lt: moment(date).add(1, 'd').format(),
+        },
+    });
+
+    res.status(200).json({ data: result });
 };

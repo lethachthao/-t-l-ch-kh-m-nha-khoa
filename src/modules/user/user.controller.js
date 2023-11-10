@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { userModel } from '../../models/user.model';
 import { sendMail } from '../mailer/mailer.controller';
+import { scheduleModel } from '../../models/schedule.model';
 const { ObjectId } = mongoose.Types;
 
 export const getUsers = async (req, res, next) => {
@@ -12,6 +13,21 @@ export const getUsersByType = async (req, res, next) => {
     const { accountType } = req.params;
 
     const result = await userModel.find({ accountType });
+
+    res.status(200).json({ data: result });
+};
+
+export const getDoctors = async (req, res, next) => {
+    const result = await userModel
+        .aggregate()
+        .match({ accountType: 'doctor' })
+        .project({
+            role: 0,
+            accountType: 0,
+            password: 0,
+            createdAt: 0,
+            updatedAt: 0,
+        });
 
     res.status(200).json({ data: result });
 };
@@ -69,4 +85,21 @@ export const updateUser = async (req, res, next) => {
         message: 'Cập nhật tài khoản thành công!',
         data: result,
     });
+};
+
+export const getDoctorDetail = async (req, res, next) => {
+    const { id } = req.params;
+
+    const [result] = await userModel
+        .aggregate()
+        .match({ _id: new ObjectId(id) })
+
+        .project({
+            role: 0,
+            accountType: 0,
+            password: 0,
+            updatedAt: 0,
+        });
+
+    res.status(200).json({ data: result });
 };

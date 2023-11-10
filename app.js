@@ -70,10 +70,10 @@ app.use(hpp());
 // apply tất cả các routes đã khai báo
 app.use('/api', routes);
 
-app.use((req, res, next) => {
-    const err = new Error('Page not found');
-    next(err);
-});
+// app.use((req, res, next) => {
+//     const err = new Error('Page not found');
+//     next(err);
+// });
 
 // xử lí lỗi trong express
 // lỗi trong express nodejs nó là một dạng middleware
