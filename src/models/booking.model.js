@@ -94,6 +94,12 @@ const bookingSchema = new Schema(
             type: String,
             required: true,
         },
+
+        isVerified: {
+            type: Boolean,
+            required: false,
+            default: false,
+        },
     },
     {
         timestamps: true,

@@ -66,8 +66,8 @@ export const getSchedule = async (req, res, next) => {
         doctorId: new ObjectId(id),
 
         date: {
-            $gte: moment(date).format(),
-            $lt: moment(date).add(1, 'd').format(),
+            $gte: moment(new Date(date)).format(),
+            $lt: moment(new Date(date)).add(1, 'd').format(),
         },
     });
 

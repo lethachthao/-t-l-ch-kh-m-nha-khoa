@@ -50,7 +50,8 @@ export const signinController = async (req, res, next) => {
 export const signupController = async (req, res, next) => {
     // lưu ý: tất cả các thông tin này đều cần được validate bởi một middleware khác trước khi lọt được vào đây
 
-    const { email, name, phoneNumber, password } = req.body;
+    const { email, name, phoneNumber, password, accountType, role, address } =
+        req.body;
 
     const { existed, data: user } = await getUserByEmail(email);
 
@@ -70,6 +71,9 @@ export const signupController = async (req, res, next) => {
         name,
         phoneNumber,
         password: passwordHashed,
+        accountType,
+        address,
+        role,
     });
 
     //gửi mail

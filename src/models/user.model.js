@@ -81,7 +81,7 @@ const userSchema = new Schema(
         role: {
             type: String,
             required: true,
-            enum: ['user', 'dentist', 'admin'], // role của user là 1 trong 3 giá trị này
+            enum: ['user', 'doctor', 'admin'], // role của user là 1 trong 3 giá trị này
             default: 'user',
         },
     },

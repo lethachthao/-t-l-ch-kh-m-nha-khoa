@@ -7,6 +7,18 @@ export const getMedicalSpecialty = async (req, res, next) => {
     res.status(200).json({ data: result });
 };
 
+export const topSpecialist = async (req, res, next) => {
+    const result = await medicalSpecialtyModel
+        .aggregate()
+        .match({})
+        .sample(10)
+        .project({
+            members: 0,
+        });
+
+    res.status(200).json({ data: result });
+};
+
 export const createMedicalSpecialty = async (req, res, next) => {
     // lấy ra các fields từ frontend admin tạo và gửi qua đây
     const { name, description } = req.body;

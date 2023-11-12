@@ -9,6 +9,17 @@ export const getUsers = async (req, res, next) => {
     res.status(200).json({ data: result });
 };
 
+export const getMe = async (req, res, next) => {
+    const { userId } = req.auth;
+    const result = await userModel.findOne({ _id: new ObjectId(userId) });
+
+    if (!result) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({ data: result });
+};
+
 export const getUsersByType = async (req, res, next) => {
     const { accountType } = req.params;
 
@@ -98,6 +109,22 @@ export const getDoctorDetail = async (req, res, next) => {
             role: 0,
             accountType: 0,
             password: 0,
+            updatedAt: 0,
+        });
+
+    res.status(200).json({ data: result });
+};
+
+export const topDoctors = async (req, res, next) => {
+    const result = await userModel
+        .aggregate()
+        .match({ accountType: 'doctor' })
+        .sample(10)
+        .project({
+            role: 0,
+            accountType: 0,
+            password: 0,
+            createdAt: 0,
             updatedAt: 0,
         });
 

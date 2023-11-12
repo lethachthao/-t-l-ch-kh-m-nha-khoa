@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer'; // đây là thư viện send mail khá nổi tiếng, mình sẽ dùng thư viện này để xử lí việc gửi mail
 
 export const sendMail = async (data, callback) => {
-    const { title, content, to } = data || {};
+    const { title, to, ...otherOptions } = data || {};
     const { name, email } = to || {};
 
     // Create a SMTP transporter object (tạo cấu hình cho send mail SMTP)
@@ -18,6 +18,7 @@ export const sendMail = async (data, callback) => {
             clientSecret: process.env.GOOGLE_SECRET_KEY,
             accessToken: process.env.GOOGLE_ACCESS_TOKEN,
             refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
+            expires: process.env.GOOGLE_ACCESS_TOKEN_EXPIRES_IN,
         },
         tls: {
             rejectUnauthorized: false,
@@ -35,7 +36,6 @@ export const sendMail = async (data, callback) => {
         subject: title,
 
         // nội dung gmail
-        text: content,
 
         // HTML body nếu cần gửi định dạng HTML để hiển thị cho người dùng thì em bỏ cái dòng comment code bên dưới ra
         // html:
@@ -43,14 +43,15 @@ export const sendMail = async (data, callback) => {
         //   '<p>Here\'s a nyan cat for you as an embedded attachment:<br/><img src="cid:nyan@example.com"/></p>',
 
         // đính kèm tập tin
-        attachments: [
-            {
-                filename: 'seed1.jpg', // tên file sẽ xuất hiện trong gmail lúc gửi
-                // path: __dirname + '/images/seed1.jpg', // đường dẫn tới file cần gửi
-                path: 'https://i.pinimg.com/564x/49/a4/a9/49a4a963879ef320e36581861d3657ce.jpg',
-                cid: 'seed1', // ID của file cần gửi, ID giữa các file này phải không được trùng nhau, nó do mình tự đặt
-            },
-        ],
+        // attachments: [
+        //     {
+        //         filename: 'seed1.jpg', // tên file sẽ xuất hiện trong gmail lúc gửi
+        //         // path: __dirname + '/images/seed1.jpg', // đường dẫn tới file cần gửi
+        //         path: 'https://i.pinimg.com/564x/49/a4/a9/49a4a963879ef320e36581861d3657ce.jpg',
+        //         cid: 'seed1', // ID của file cần gửi, ID giữa các file này phải không được trùng nhau, nó do mình tự đặt
+        //     },
+        // ],
+        ...otherOptions,
     };
 
     try {

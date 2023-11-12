@@ -4,6 +4,8 @@ import { userRoute } from '../modules/user/user.route';
 import { authRoute } from '../modules/auth/auth.route';
 import { scheduleRoute } from '../modules/schedule/schedule.route';
 import { bookingRoute } from '../modules/booking/booking.route';
+import { topDoctors } from '../modules/user/user.controller';
+import { topSpecialist } from '../modules/medical-specialty/medical-specialty.controller';
 
 const routes = Router();
 
@@ -28,6 +30,14 @@ const apiRoutes = [
     {
         path: '/booking',
         route: bookingRoute,
+    },
+    {
+        path: '/top-doctors',
+        route: topDoctors,
+    },
+    {
+        path: '/top-specialist',
+        route: topSpecialist,
     },
 ];
 

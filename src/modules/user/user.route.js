@@ -7,11 +7,15 @@ import {
     updateUser,
     getDoctors,
     getDoctorDetail,
+    getMe,
 } from './user.controller';
+import { authMiddleware } from '../../middlewares/auth.middleware';
 
 const userRoute = Router();
 
 userRoute.get('/', getUsers);
+userRoute.get('/me', authMiddleware(), getMe);
+
 userRoute.get('/doctors', getDoctors);
 userRoute.get('/doctors/:id', getDoctorDetail);
 
