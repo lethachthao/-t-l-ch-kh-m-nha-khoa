@@ -9,13 +9,17 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_SECRET_KEY,
 });
 
-const storage = new CloudinaryStorage({
-    cloudinary,
-    params: {
-        folder: 'itooth', // tên folder tạo trên cloudinary
-        allowed_formats: ['png', 'jpg', 'jpeg'], // chỉ cho phép upload định dạng ảnh png, jpg ,jpeg
-        public_id: (req, file) => nanoid(), // random một id ngẫu nhiên cho mỗi ảnh
-    },
-});
+const storage = (params) =>
+    new CloudinaryStorage({
+        cloudinary,
+        params: {
+            folder: 'itooth', // tên folder tạo trên cloudinary
+            allowed_formats: ['png', 'jpg', 'jpeg'], // chỉ cho phép upload định dạng ảnh png, jpg ,jpeg
+            public_id: (req, file) => nanoid(), // random một id ngẫu nhiên cho mỗi ảnh
+            ...params,
+        },
+    });
 
-export const upload = multer({ storage });
+export const uploadMiddleware = (params = {}) => {
+    return multer({ storage: storage(params) });
+};

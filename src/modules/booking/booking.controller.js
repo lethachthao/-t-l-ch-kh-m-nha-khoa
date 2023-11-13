@@ -1,7 +1,10 @@
+import mongoose from 'mongoose';
 import { bookingModel } from '../../models/booking.model';
 import { registryToken, verifyToken } from '../../utils/token';
 import { sendMail } from '../mailer/mailer.controller';
 import moment from 'moment';
+
+const { ObjectId } = mongoose.Types;
 
 export const createBooking = async (req, res, next) => {
     const result = await bookingModel.create(req.body);
@@ -67,4 +70,30 @@ export const verifyBooking = async (req, res, next) => {
     await bookingModel.findByIdAndUpdate(bookingId, { isVerified: true });
 
     res.status(200).json({ messsage: 'Xác thực thành công!' });
+};
+
+export const getBookings = async (req, res, next) => {
+    const { userId } = req.auth;
+    const { date } = req.query;
+
+    console.log(userId, date);
+
+    let result = await bookingModel
+        .find({
+            doctorId: new ObjectId(userId),
+            date: {
+                $gte: moment(new Date(date)).format(),
+                $lt: moment(new Date(date)).add(1, 'd').format(),
+            },
+
+            // ở đây mình chỉ lấy ra những cái đơn booking nào mà bệnh nhân đã xác nhận thông qua link gửi trong email
+            // đề phòng người ta spam bác sĩ đơn ảo
+            isVerified: true,
+
+            // đồng thời chỉ lấy ra những đơn bác sĩ chưa xuất hóa đơn và chưa xác nhận, tức là chỉ lấy những đơn mới khám nhưng chưa có bill
+            confirmedAt: null,
+        })
+        .populate('doctorId');
+
+    res.status(200).json({ data: result });
 };

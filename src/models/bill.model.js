@@ -6,40 +6,21 @@ const { Schema, model } = mongoose;
 
 const billSchema = new Schema(
     {
-        // id bệnh nhân
-        patientId: {
-            type: Schema.Types.ObjectId, // ID của bệnh nhân là một object id của mongodb, nó không phải string
-            ref: 'users', // tham chiếu đến user model collection để sau này join qua user
-            required: true,
-            index: true,
-        },
-        //id bác sĩ phụ trách khám,
-        assignee: {
+        bookingId: {
             type: Schema.Types.ObjectId,
-            ref: 'users',
+            ref: 'bookings',
             required: true,
             index: true,
         },
 
-        // tình trạng bệnh
-        medical_condition: {
+        billFile: {
             type: String,
             required: true,
-            trim: true,
         },
 
-        // đơn thuốc
-        prescription: {
+        billName: {
             type: String,
             required: true,
-            trim: true,
-        },
-
-        // viện phí
-        hospital_fee: {
-            type: String,
-            required: true,
-            trim: true,
         },
     },
     {

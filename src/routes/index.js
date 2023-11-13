@@ -6,6 +6,7 @@ import { scheduleRoute } from '../modules/schedule/schedule.route';
 import { bookingRoute } from '../modules/booking/booking.route';
 import { topDoctors } from '../modules/user/user.controller';
 import { topSpecialist } from '../modules/medical-specialty/medical-specialty.controller';
+import { billRoute } from '../modules/bill/bill.route';
 
 const routes = Router();
 
@@ -30,6 +31,10 @@ const apiRoutes = [
     {
         path: '/booking',
         route: bookingRoute,
+    },
+    {
+        path: '/bill',
+        route: billRoute,
     },
     {
         path: '/top-doctors',

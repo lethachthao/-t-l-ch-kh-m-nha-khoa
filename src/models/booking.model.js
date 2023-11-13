@@ -100,6 +100,11 @@ const bookingSchema = new Schema(
             required: false,
             default: false,
         },
+        confirmedAt: {
+            type: Date,
+            required: false,
+            default: null,
+        },
     },
     {
         timestamps: true,

@@ -5,7 +5,7 @@ import {
     updateMedicalSpecialty,
     deleteMedicalSpecialty,
 } from './medical-specialty.controller';
-import { upload } from '../../middlewares/upload.middleware';
+import { uploadMiddleware } from '../../middlewares/upload.middleware';
 
 const medicalSpecialtyRoute = Router();
 
@@ -15,7 +15,7 @@ medicalSpecialtyRoute.get('/', getMedicalSpecialty);
 // tạo chuyên khoa
 medicalSpecialtyRoute.post(
     '/',
-    upload.single('avatar'),
+    uploadMiddleware().single('avatar'),
     createMedicalSpecialty,
 );
 
@@ -23,7 +23,7 @@ medicalSpecialtyRoute.delete('/:id', deleteMedicalSpecialty);
 
 medicalSpecialtyRoute.put(
     '/:id',
-    upload.single('avatar'),
+    uploadMiddleware().single('avatar'),
     updateMedicalSpecialty,
 );
 
