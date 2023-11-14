@@ -7,6 +7,8 @@ import { bookingRoute } from '../modules/booking/booking.route';
 import { topDoctors } from '../modules/user/user.controller';
 import { topSpecialist } from '../modules/medical-specialty/medical-specialty.controller';
 import { billRoute } from '../modules/bill/bill.route';
+import { searchRoute } from '../modules/search/search.route';
+import { getMedicalExaminationHistory } from '../modules/medical-examination-history/medical-examination-history.controller';
 
 const routes = Router();
 
@@ -43,6 +45,14 @@ const apiRoutes = [
     {
         path: '/top-specialist',
         route: topSpecialist,
+    },
+    {
+        path: '/search',
+        route: searchRoute,
+    },
+    {
+        path: '/medical-examination-history',
+        route: getMedicalExaminationHistory,
     },
 ];
 

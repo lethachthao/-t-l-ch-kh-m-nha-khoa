@@ -28,6 +28,11 @@ const userSchema = new Schema(
             required: false,
         },
 
+        birthday: {
+            type: Date,
+            required: false,
+        },
+
         avatar: {
             type: new Schema({
                 filename: { type: String, required: true },

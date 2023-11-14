@@ -3,10 +3,31 @@ import { bookingModel } from '../../models/booking.model';
 import { registryToken, verifyToken } from '../../utils/token';
 import { sendMail } from '../mailer/mailer.controller';
 import moment from 'moment';
+import ApiError from '../../utils/api-error';
 
 const { ObjectId } = mongoose.Types;
 
 export const createBooking = async (req, res, next) => {
+    const { date, startTime, endTime } = req.body;
+
+    const isBooked = await bookingModel.findOne({
+        startTime,
+        endTime,
+        date: {
+            $gte: moment(new Date(date)).format(),
+            $lt: moment(new Date(date)).add(1, 'd').format(),
+        },
+    });
+
+    if (isBooked) {
+        return next(
+            new ApiError(
+                409,
+                'Thời gian đặt không khả dụng! Vui lòng chọn thời gian khác.',
+            ),
+        );
+    }
+
     const result = await bookingModel.create(req.body);
 
     await result.populate('doctorId');
@@ -75,8 +96,6 @@ export const verifyBooking = async (req, res, next) => {
 export const getBookings = async (req, res, next) => {
     const { userId } = req.auth;
     const { date } = req.query;
-
-    console.log(userId, date);
 
     let result = await bookingModel
         .find({

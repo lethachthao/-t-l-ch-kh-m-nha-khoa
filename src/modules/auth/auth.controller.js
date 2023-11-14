@@ -54,14 +54,16 @@ export const signupController = async (req, res, next) => {
         email,
         name,
         bio,
+        birthday,
+        gender,
         phoneNumber,
         password,
-        accountType,
-        role,
+        accountType = 'user',
+        role = 'user',
         address,
     } = req.body;
 
-    const { path: avtPath, filename: avtName } = req.file;
+    const { path: avtPath, filename: avtName } = req.file || {};
 
     const { existed, data: user } = await getUserByEmail(email);
 
@@ -79,15 +81,20 @@ export const signupController = async (req, res, next) => {
     await userModel.create({
         name,
         email,
-        bio,
+        ...(bio && { bio }),
         phoneNumber,
         password: passwordHashed,
         accountType,
         address,
-        avatar: {
-            filename: avtName,
-            path: avtPath,
-        },
+        ...(birthday && { birthday }),
+        ...(gender && { gender }),
+        ...(avtName &&
+            avtPath && {
+                avatar: {
+                    filename: avtName,
+                    path: avtPath,
+                },
+            }),
         role,
     });
 
