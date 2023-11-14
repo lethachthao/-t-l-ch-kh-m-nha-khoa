@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { signinController } from './auth.controller';
 import { signupController } from './auth.controller';
+import { uploadMiddleware } from '../../middlewares/upload.middleware';
 
 const authRoute = Router();
 
@@ -8,6 +9,10 @@ const authRoute = Router();
 authRoute.post('/signin', signinController);
 
 // đăng kí
-authRoute.post('/signup', signupController);
+authRoute.post(
+    '/signup',
+    uploadMiddleware().single('avatar'),
+    signupController,
+);
 
 export { authRoute };

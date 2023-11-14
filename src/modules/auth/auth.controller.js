@@ -50,8 +50,18 @@ export const signinController = async (req, res, next) => {
 export const signupController = async (req, res, next) => {
     // lưu ý: tất cả các thông tin này đều cần được validate bởi một middleware khác trước khi lọt được vào đây
 
-    const { email, name, phoneNumber, password, accountType, role, address } =
-        req.body;
+    const {
+        email,
+        name,
+        bio,
+        phoneNumber,
+        password,
+        accountType,
+        role,
+        address,
+    } = req.body;
+
+    const { path: avtPath, filename: avtName } = req.file;
 
     const { existed, data: user } = await getUserByEmail(email);
 
@@ -67,12 +77,17 @@ export const signupController = async (req, res, next) => {
     const passwordHashed = bcrypt.hashSync(password, passwordSalt); // mã hóa password người dùng
 
     await userModel.create({
-        email,
         name,
+        email,
+        bio,
         phoneNumber,
         password: passwordHashed,
         accountType,
         address,
+        avatar: {
+            filename: avtName,
+            path: avtPath,
+        },
         role,
     });
 

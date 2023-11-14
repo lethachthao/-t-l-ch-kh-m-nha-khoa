@@ -7,6 +7,29 @@ export const getMedicalSpecialty = async (req, res, next) => {
     res.status(200).json({ data: result });
 };
 
+export const getMedicalSpecialtyDetail = async (req, res, next) => {
+    const { id } = req.params;
+
+    const [result] = await medicalSpecialtyModel
+        .aggregate()
+        .match({ _id: new ObjectId(id) })
+        .lookup({
+            from: 'users',
+            localField: 'members',
+            foreignField: '_id',
+            as: 'members',
+            pipeline: [
+                {
+                    $project: {
+                        password: 0,
+                    },
+                },
+            ],
+        });
+
+    res.status(200).json({ data: result });
+};
+
 export const topSpecialist = async (req, res, next) => {
     const result = await medicalSpecialtyModel
         .aggregate()
@@ -21,12 +44,13 @@ export const topSpecialist = async (req, res, next) => {
 
 export const createMedicalSpecialty = async (req, res, next) => {
     // lấy ra các fields từ frontend admin tạo và gửi qua đây
-    const { name, description } = req.body;
+    const { name, description, members } = req.body;
     const { filename, path } = req.file;
 
     const result = await medicalSpecialtyModel.create({
         name,
         description,
+        members,
         avatar: {
             filename,
             path,
@@ -41,7 +65,7 @@ export const createMedicalSpecialty = async (req, res, next) => {
 
 export const updateMedicalSpecialty = async (req, res, next) => {
     const { id } = req.params;
-    const { name, description } = req.body;
+    const { name, description, members } = req.body;
     const { filename, path } = req.file || {};
 
     const isIncludeFile = Boolean(req.file);
@@ -59,6 +83,7 @@ export const updateMedicalSpecialty = async (req, res, next) => {
                       },
                   }
                 : {}),
+            members,
         },
         { new: true },
     );

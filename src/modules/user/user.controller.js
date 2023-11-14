@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import { userModel } from '../../models/user.model';
 import { sendMail } from '../mailer/mailer.controller';
 import { scheduleModel } from '../../models/schedule.model';
+import { specialistLookup } from './user.pipeline';
 const { ObjectId } = mongoose.Types;
 
 export const getUsers = async (req, res, next) => {
@@ -32,6 +33,7 @@ export const getDoctors = async (req, res, next) => {
     const result = await userModel
         .aggregate()
         .match({ accountType: 'doctor' })
+        .lookup(specialistLookup)
         .project({
             role: 0,
             accountType: 0,
@@ -44,18 +46,19 @@ export const getDoctors = async (req, res, next) => {
 };
 
 export const createUser = async (req, res, next) => {
-    const { name, email } = req.body;
+    const { path: avatar } = req.file;
 
-    const result = await userModel.create(req.body);
-    await sendMail({
-        title: 'Đăng kí thành công!',
-        content: 'Cảm ơn bạn đã đăng kí tài khoản. Kính chào hẹn gặp lại',
-        to: {
-            name,
-            email,
-        },
-    });
-    console.log(req.body);
+    const result = await userModel.create({ ...req.body, avatar });
+
+    // await sendMail({
+    //     title: 'Đăng kí thành công!',
+    //     content: 'Cảm ơn bạn đã đăng kí tài khoản. Kính chào hẹn gặp lại',
+    //     to: {
+    //         name,
+    //         email,
+    //     },
+    // });
+
     res.status(200).json({ data: result });
 };
 
@@ -78,13 +81,23 @@ export const deleteUser = async (req, res, next) => {
 };
 
 export const updateUser = async (req, res, next) => {
-    const { _id, ...otherInfo } = req.body;
+    const { id } = req.params;
+    const otherInfo = req.body;
+    const avatar = req.file;
 
     const result = await userModel.findByIdAndUpdate(
         {
-            _id: new ObjectId(_id),
+            _id: new ObjectId(id),
         },
-        otherInfo,
+        {
+            ...otherInfo,
+            ...(avatar && {
+                avatar: {
+                    path: avatar.path,
+                    filename: avatar.filename,
+                },
+            }),
+        },
         {
             new: true,
         },
@@ -104,7 +117,7 @@ export const getDoctorDetail = async (req, res, next) => {
     const [result] = await userModel
         .aggregate()
         .match({ _id: new ObjectId(id) })
-
+        .lookup(specialistLookup)
         .project({
             role: 0,
             accountType: 0,
@@ -120,6 +133,7 @@ export const topDoctors = async (req, res, next) => {
         .aggregate()
         .match({ accountType: 'doctor' })
         .sample(10)
+        .lookup(specialistLookup)
         .project({
             role: 0,
             accountType: 0,

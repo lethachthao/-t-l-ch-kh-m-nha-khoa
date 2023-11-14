@@ -10,6 +10,7 @@ import {
     getMe,
 } from './user.controller';
 import { authMiddleware } from '../../middlewares/auth.middleware';
+import { uploadMiddleware } from '../../middlewares/upload.middleware';
 
 const userRoute = Router();
 
@@ -20,8 +21,8 @@ userRoute.get('/doctors', getDoctors);
 userRoute.get('/doctors/:id', getDoctorDetail);
 
 userRoute.get('/:accountType', getUsersByType);
-userRoute.post('/', createUser);
+userRoute.post('/', uploadMiddleware().single('avatar'), createUser);
 userRoute.delete('/', deleteUser);
-userRoute.put('/', updateUser);
+userRoute.put('/:id', uploadMiddleware().single('avatar'), updateUser);
 
 export { userRoute };

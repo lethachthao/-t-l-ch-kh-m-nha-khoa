@@ -20,7 +20,7 @@ const userSchema = new Schema(
             type: String,
             required: false,
             trim: true,
-            maxlength: 1000,
+            maxlength: 10000,
         },
 
         age: {
@@ -29,7 +29,10 @@ const userSchema = new Schema(
         },
 
         avatar: {
-            type: String,
+            type: new Schema({
+                filename: { type: String, required: true },
+                path: { type: String, required: true },
+            }),
             required: false,
         },
 
