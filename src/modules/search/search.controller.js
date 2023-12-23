@@ -1,6 +1,7 @@
 import { userModel } from '../../models/user.model';
+import { catchAsync } from '../../utils/catch-async';
 
-export const getSearch = async (req, res, next) => {
+export const getSearch = catchAsync(async (req, res, next) => {
     const { q } = req.query;
     // const { type } = req.queryPolluted; // ['specialist', 'doctor']
 
@@ -56,4 +57,4 @@ export const getSearch = async (req, res, next) => {
         });
 
     res.status(200).json({ data: result });
-};
+});

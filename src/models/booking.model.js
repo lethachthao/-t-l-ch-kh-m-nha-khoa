@@ -2,28 +2,6 @@ import mongoose from 'mongoose';
 
 // MODEL SCHEMA BOOKING
 
-// ddress
-// :
-// "fdfdfdfdfdf"
-// birthday
-// :
-// "10/11/2023"
-// gender
-// :
-// "male"
-// name
-// :
-// "sasasas"
-// payment
-// :
-// "1"
-// phoneNumuber
-// :
-// "323232323"
-// reason
-// :
-// "fdfdfdfdf"
-
 const { Schema, model } = mongoose;
 
 const bookingSchema = new Schema(

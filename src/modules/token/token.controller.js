@@ -46,7 +46,7 @@ export const generateToken = (accessData, refreshData) => {
                         /[^0-9]/g, // tách lấy số năm, vd: 1y => 1
                         '',
                     ),
-                    'year',
+                    'y',
                 )
                 .toDate(),
         },

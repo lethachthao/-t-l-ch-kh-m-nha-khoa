@@ -3,14 +3,15 @@ import { userModel } from '../../models/user.model';
 import { sendMail } from '../mailer/mailer.controller';
 import { scheduleModel } from '../../models/schedule.model';
 import { specialistLookup } from './user.pipeline';
+import { catchAsync } from '../../utils/catch-async';
 const { ObjectId } = mongoose.Types;
 
-export const getUsers = async (req, res, next) => {
+export const getUsers = catchAsync(async (req, res, next) => {
     const result = await userModel.find({});
     res.status(200).json({ data: result });
-};
+});
 
-export const getMe = async (req, res, next) => {
+export const getMe = catchAsync(async (req, res, next) => {
     const { userId } = req.auth;
     const result = await userModel.findOne({ _id: new ObjectId(userId) });
 
@@ -19,17 +20,17 @@ export const getMe = async (req, res, next) => {
     }
 
     res.status(200).json({ data: result });
-};
+});
 
-export const getUsersByType = async (req, res, next) => {
+export const getUsersByType = catchAsync(async (req, res, next) => {
     const { accountType } = req.params;
 
     const result = await userModel.find({ accountType });
 
     res.status(200).json({ data: result });
-};
+});
 
-export const getDoctors = async (req, res, next) => {
+export const getDoctors = catchAsync(async (req, res, next) => {
     const result = await userModel
         .aggregate()
         .match({ accountType: 'doctor' })
@@ -43,9 +44,9 @@ export const getDoctors = async (req, res, next) => {
         });
 
     res.status(200).json({ data: result });
-};
+});
 
-export const createUser = async (req, res, next) => {
+export const createUser = catchAsync(async (req, res, next) => {
     const { path: avatar } = req.file;
 
     const result = await userModel.create({ ...req.body, avatar });
@@ -60,9 +61,9 @@ export const createUser = async (req, res, next) => {
     // });
 
     res.status(200).json({ data: result });
-};
+});
 
-export const deleteUser = async (req, res, next) => {
+export const deleteUser = catchAsync(async (req, res, next) => {
     // lấy ra email account cần xóa từ query trên URL
     // DELETE: localhost:3001/api/user?email=abc@gmail.com
     //giai thich cho em query voi
@@ -78,9 +79,9 @@ export const deleteUser = async (req, res, next) => {
         message: 'Xóa tài khoản thành công!',
         data: result,
     });
-};
+});
 
-export const updateUser = async (req, res, next) => {
+export const updateUser = catchAsync(async (req, res, next) => {
     const { id } = req.params;
     const otherInfo = req.body;
     const avatar = req.file;
@@ -109,9 +110,9 @@ export const updateUser = async (req, res, next) => {
         message: 'Cập nhật tài khoản thành công!',
         data: result,
     });
-};
+});
 
-export const getDoctorDetail = async (req, res, next) => {
+export const getDoctorDetail = catchAsync(async (req, res, next) => {
     const { id } = req.params;
 
     const [result] = await userModel
@@ -126,9 +127,9 @@ export const getDoctorDetail = async (req, res, next) => {
         });
 
     res.status(200).json({ data: result });
-};
+});
 
-export const topDoctors = async (req, res, next) => {
+export const topDoctors = catchAsync(async (req, res, next) => {
     const result = await userModel
         .aggregate()
         .match({ accountType: 'doctor' })
@@ -143,4 +144,4 @@ export const topDoctors = async (req, res, next) => {
         });
 
     res.status(200).json({ data: result });
-};
+});

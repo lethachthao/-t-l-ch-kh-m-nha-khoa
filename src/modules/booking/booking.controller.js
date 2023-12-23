@@ -4,12 +4,49 @@ import { registryToken, verifyToken } from '../../utils/token';
 import { sendMail } from '../mailer/mailer.controller';
 import moment from 'moment';
 import ApiError from '../../utils/api-error';
+import { scheduleModel } from '../../models/schedule.model';
+import { catchAsync } from '../../utils/catch-async';
 
 const { ObjectId } = mongoose.Types;
 
-export const createBooking = async (req, res, next) => {
-    const { date, startTime, endTime } = req.body;
+export const createBooking = catchAsync(async (req, res, next) => {
+    const { doctorId, date, startTime, endTime } = req.body;
 
+    // const updateSchedule = await scheduleModel.findOneAndUpdate(
+    //     {
+    //         _id: new ObjectId(doctorId),
+    //         date: {
+    //             $gte: moment(new Date(date)).format(),
+    //             $lt: moment(new Date(date)).add(1, 'd').format(),
+    //         },
+    //     },
+    //     {
+    //         $set: {
+    //             'time.$.isActived': {
+    //                 $cond: {
+    //                     $if: {
+    //                         $and: [
+    //                             {
+    //                                 'time.$.start': {
+    //                                     $eq: startTime,
+    //                                 },
+    //                             },
+    //                             {
+    //                                 end: {
+    //                                     $eq: endTime,
+    //                                 },
+    //                             },
+    //                         ],
+    //                         then: true,
+    //                         else: false,
+    //                     },
+    //                 },
+    //             },
+    //         },
+    //     },
+    // );
+
+    // console.log('updateSchedule: ', updateSchedule);
     const isBooked = await bookingModel.findOne({
         startTime,
         endTime,
@@ -75,9 +112,9 @@ export const createBooking = async (req, res, next) => {
         },
     );
     res.status(200).json({ message: 'Đặt lịch khám thành công' });
-};
+});
 
-export const verifyBooking = async (req, res, next) => {
+export const verifyBooking = catchAsync(async (req, res, next) => {
     const { token } = req.query;
 
     const data = verifyToken(token);
@@ -91,9 +128,9 @@ export const verifyBooking = async (req, res, next) => {
     await bookingModel.findByIdAndUpdate(bookingId, { isVerified: true });
 
     res.status(200).json({ messsage: 'Xác thực thành công!' });
-};
+});
 
-export const getBookings = async (req, res, next) => {
+export const getBookings = catchAsync(async (req, res, next) => {
     const { userId } = req.auth;
     const { date } = req.query;
 
@@ -115,4 +152,30 @@ export const getBookings = async (req, res, next) => {
         .populate('doctorId');
 
     res.status(200).json({ data: result });
-};
+});
+
+export const getMyBookings = catchAsync(async (req, res, next) => {
+    const { email } = req.auth;
+
+    let result = await bookingModel
+        .find({
+            email,
+        })
+        .populate('doctorId');
+
+    res.status(200).json({ data: result });
+});
+
+export const getMyBookingsDetail = catchAsync(async (req, res, next) => {
+    const { email } = req.auth;
+    const { id } = req.params;
+
+    let [result] = await bookingModel
+        .find({
+            _id: new ObjectId(id),
+            email,
+        })
+        .populate('doctorId');
+
+    res.status(200).json({ data: result });
+});

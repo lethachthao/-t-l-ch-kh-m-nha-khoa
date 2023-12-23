@@ -1,8 +1,9 @@
 import { billModel } from '../../models/bill.model';
 import { bookingModel } from '../../models/booking.model';
+import { catchAsync } from '../../utils/catch-async';
 import { sendMail } from '../mailer/mailer.controller';
 
-export const createBill = async (req, res, next) => {
+export const createBill = catchAsync(async (req, res, next) => {
     const { bookingId } = req.body;
     const { path: billFile, filename: billName } = req.file;
 
@@ -41,4 +42,4 @@ export const createBill = async (req, res, next) => {
     });
 
     res.status(200).json({ message: 'Tạo bill thành công!' });
-};
+});

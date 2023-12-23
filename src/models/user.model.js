@@ -117,7 +117,3 @@ userSchema.statics.isEmailExisted = async function (email) {
 };
 
 export const userModel = model('users', userSchema);
-
-// cơ bản cho bảng user như vậy là oke rồi nha em, em có gì ko hiểu ko, cái enum và trim là gì v anh
-// enum chính là cái mảng mà user đó chỉ được phép chọn 1 cái duy nhất trong số đó, ví dụ user role chỉ có thể là "user" hoặc "dentist" hoặc "admin"
-// trim là loại bỏ những cái khoảng trắng white space trong chuỗi đầu vào đó em, ví dụ: đầu vào là "  Nguyễn Văn Đen  ", nó sẽ convert thành "Nguyễn Văn Đen" dạ vâng em hiểu rồi ạ dạ vâng ạ

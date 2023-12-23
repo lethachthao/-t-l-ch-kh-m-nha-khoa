@@ -4,8 +4,9 @@ import { getUserByEmail } from './auth.service';
 import { generateToken } from '../token/token.controller';
 import { userModel } from '../../models/user.model';
 import { sendMail } from '../mailer/mailer.controller';
+import { catchAsync } from '../../utils/catch-async';
 
-export const signinController = async (req, res, next) => {
+export const signinController = catchAsync(async (req, res, next) => {
     // 1. lấy email, password người dùng gửi lên
     const { email, password } = req.body;
 
@@ -40,14 +41,14 @@ export const signinController = async (req, res, next) => {
 
     // hash thông tin user và generate access & refresh token
     const data = generateToken(
-        { userId: user._id, role: 'user' },
+        { userId: user._id, role: user.role, email: user.email },
         { userId: user._id },
     );
 
     res.status(200).json(data);
-};
+});
 
-export const signupController = async (req, res, next) => {
+export const signupController = catchAsync(async (req, res, next) => {
     // lưu ý: tất cả các thông tin này đều cần được validate bởi một middleware khác trước khi lọt được vào đây
 
     const {
@@ -118,8 +119,4 @@ export const signupController = async (req, res, next) => {
     });
 
     res.status(200).json({ message: 'Tạo tài khoản thành công!' });
-};
-
-// xong tính năng đăng k1 rồi đó em, em chưa hiểu gì hông em? em hiểu rồi anh ơi mình có làm đăng xuất ko anh, có chứ cái đó do frontend làm em nha dạ vâng ạ
-// test thử đăng nhập với user vừa tạo
-// giờ chúng ta sẽ làm trường hợp ứng dụng đầu tiên với send mail đó là gửi email thông báo cho người dùng khi họ đăng kí thành công account em ha vâng ạ
+});
